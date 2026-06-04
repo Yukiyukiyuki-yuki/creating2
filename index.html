@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>直播轻量化启动器</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="shell">
+      <section class="topbar">
+        <div>
+          <p class="eyebrow">UKEC Live Launch Assistant</p>
+          <h1>直播轻量化启动器</h1>
+        </div>
+        <div class="top-actions">
+          <button class="icon-button" id="loadSample" type="button" title="填入示例">↺</button>
+          <button class="icon-button" id="clearForm" type="button" title="清空表单">×</button>
+        </div>
+      </section>
+
+      <section class="panel api-panel">
+        <div class="panel-heading api-heading">
+          <div>
+            <p class="eyebrow">AI Config</p>
+            <h2>网页内 API 配置</h2>
+          </div>
+          <span class="pill" id="apiStatus">未配置</span>
+        </div>
+        <div class="api-grid">
+          <label>
+            <span>服务商</span>
+            <select id="apiProvider">
+              <option value="openai">OpenAI</option>
+              <option value="deepseek">DeepSeek</option>
+              <option value="doubao">豆包 / 火山方舟</option>
+              <option value="custom">自定义兼容接口</option>
+            </select>
+          </label>
+          <label>
+            <span>API Key</span>
+            <input id="apiKey" type="password" placeholder="sk-..." autocomplete="off" />
+          </label>
+          <label class="wide">
+            <span>Base URL</span>
+            <input id="apiBaseUrl" placeholder="如：https://api.openai.com/v1" />
+          </label>
+          <label>
+            <span>模型</span>
+            <input id="apiModel" placeholder="如：gpt-4.1-mini" />
+          </label>
+          <div class="api-actions">
+            <button class="secondary compact" id="saveApiConfig" type="button">保存配置</button>
+            <button class="secondary compact" id="clearApiConfig" type="button">清除</button>
+          </div>
+        </div>
+        <p class="api-note">支持 OpenAI Chat Completions 兼容接口。API Key 只保存在当前浏览器，不会写入文件。若服务商不允许浏览器跨域请求，请使用后端模式。</p>
+      </section>
+
+      <section class="workspace">
+        <form class="panel form-panel" id="launchForm">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Input</p>
+              <h2>单场直播信息</h2>
+            </div>
+            <span class="pill" id="typeBadge">自动识别场次</span>
+          </div>
+
+          <div class="field-grid">
+            <label class="wide">
+              <span>目标场次</span>
+              <select name="targetType">
+                <option value="auto">自动识别</option>
+                <option value="天赋志愿场">天赋志愿场</option>
+                <option value="留学路径场">留学路径场</option>
+                <option value="家长决策场">家长决策场</option>
+                <option value="出分前准备场">出分前准备场</option>
+                <option value="出分后补救场">出分后补救场</option>
+                <option value="高考后综合规划场">高考后综合规划场</option>
+              </select>
+            </label>
+            <label>
+              <span>直播时间</span>
+              <input name="time" placeholder="如：6月11日 14:00" />
+            </label>
+            <label>
+              <span>直播主题</span>
+              <input name="topic" placeholder="如：高考结束后第一步：孩子未来方向怎么判断？" required />
+            </label>
+            <label>
+              <span>面向人群</span>
+              <input name="audience" placeholder="如：高考后学生家长" />
+            </label>
+            <label>
+              <span>嘉宾姓名和身份</span>
+              <input name="guest" placeholder="如：彭威老师，遇见天赋项目负责人" />
+            </label>
+            <label class="wide">
+              <span>本场核心目的</span>
+              <textarea name="goal" rows="4" placeholder="品牌层、内容层、促销层分别想达成什么？"></textarea>
+            </label>
+            <label class="wide">
+              <span>用户痛点</span>
+              <textarea name="pain" rows="4" placeholder="如：不知道选什么专业；不知道现在该做什么"></textarea>
+            </label>
+            <label class="wide">
+              <span>主持人提问</span>
+              <textarea
+                name="hostQuestions"
+                rows="7"
+                placeholder="一行一个问题。留空时系统会自动生成。&#10;如：&#10;高考刚结束，现在看专业方向会不会太早？&#10;孩子不知道自己喜欢什么，家长应该怎么判断？&#10;热门专业一定适合孩子吗？"
+              ></textarea>
+            </label>
+            <label>
+              <span>主关键词</span>
+              <input name="keyword" placeholder="如：天赋 / 路径 / 评估" />
+            </label>
+            <label>
+              <span>资料钩子</span>
+              <input name="leadMagnet" placeholder="如：遇见天赋自评表" />
+            </label>
+            <label>
+              <span>抽奖机制</span>
+              <input name="lottery" placeholder="如：每10分钟抽1个登机箱" />
+            </label>
+            <label>
+              <span>直播间福利</span>
+              <input name="benefit" placeholder="如：10个免费1v1规划名额" />
+            </label>
+            <label class="wide">
+              <span>下一场预告</span>
+              <input name="next" placeholder="如：6月11日 19点 家长专场：高考后留学，家长最关心的7个问题" />
+            </label>
+          </div>
+
+          <div class="form-actions">
+            <button class="primary" type="submit">本地生成</button>
+            <button class="primary alt" id="generateAI" type="button">AI生成</button>
+            <button class="secondary" id="reuseLast" type="button">复用上一场</button>
+          </div>
+        </form>
+
+        <section class="panel output-panel">
+          <div class="panel-heading">
+            <div>
+              <p class="eyebrow">Output</p>
+              <h2>直播启动包</h2>
+            </div>
+            <div class="output-actions">
+              <button class="secondary compact" id="copyMarkdown" type="button">复制</button>
+              <button class="secondary compact" id="downloadMarkdown" type="button">导出 MD</button>
+              <button class="secondary compact" id="downloadPpt" type="button">生成 PPT</button>
+              <button class="secondary compact" id="printPlan" type="button">打印/PDF</button>
+            </div>
+          </div>
+          <div class="empty-state" id="emptyState">
+            <h3>填完左侧信息后，一键生成。</h3>
+            <p>系统会自动生成启动表、主持人问题、嘉宾答题卡、PPT结构、小助手话术和待确认事项。</p>
+          </div>
+          <article class="result" id="result" hidden></article>
+        </section>
+      </section>
+
+      <section class="history-row">
+        <div class="history-heading">
+          <div>
+            <p class="eyebrow">History</p>
+            <h2>历史场次</h2>
+          </div>
+          <button class="secondary compact" id="clearHistory" type="button">清除历史</button>
+        </div>
+        <div class="history-list" id="historyList"></div>
+      </section>
+    </main>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
